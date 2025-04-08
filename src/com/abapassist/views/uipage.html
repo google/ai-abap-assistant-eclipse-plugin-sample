@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Responsive Gemini Chatbot UI</title>
+	CSSSTYLE
+	JAVASCRIPT1
+</head>
+
+<body>
+	<div class="container">
+		<div class = "navbar">
+			<button class="collapse-btn left-box">☰</button>
+			<button class="expand-btn left-box">☰</button><br>
+			<div class="nav-items">
+				<button class="rounded-button left-box" onclick="newMessage();"> +  New Chat</button>
+			</div>
+			<ul class="recent-list"><h6>Recent</h6>
+				LINKS
+		    </ul>
+		</div>
+
+	<div id="chat-container-wrapper">
+		<div id="chat-header">
+			<h1 id=title class="gradient-text"> Hello! Good morning</h1>
+		</div>
+		<div id="chat-container">
+			<div id="startupTiles">
+				<div class="welcome-box-container">
+					Level up your coding. Get the help you need in ABAP to build your projects and learn as you go.
+				</div><br />
+				<div class="welcome-box-container">
+					TILES
+				</div><br /><br />
+				<div class="welcome-box-container">
+					<h4 class="gradient-text">Quick action</h4>
+				</div>
+				<div class="welcome-box-container">
+					<button class="rounded-button" onclick="quickAction('EXPLAIN');">Explain code</button>
+					<button class="rounded-button" onclick="quickAction('REVIEW');">Review code</button>
+					<button class="rounded-button" onclick="quickAction('SUGGEST');">Suggest Improvements</button>
+					<button class="rounded-button" onclick="quickAction('AUT');">Write ABAP Unit test</button>
+				</div>
+			</div>
+		</div>
+		<div id="input-container">
+			<input type="text" id="message-input" placeholder="Ask Abap Assist">
+			<select id="modelDropdown" name="modelDropdown">
+				MODELS
+			</select>
+			<input id=send-button type="button" value="Send" onclick="sendMessage();">
+		</div>
+	</div>
+	</div>
+</body>
+
+</html>
