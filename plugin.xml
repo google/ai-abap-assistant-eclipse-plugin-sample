@@ -1,23 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
     <?eclipse version="3.4"?>
     <plugin
-        id="com.abapassist"
+        id="com.google.abapassist"
         name="AbapAssistPlugin"
         version="1.0.1">
 
 
 
         <extension point="org.eclipse.ui.startup">
-            <startup class="com.abapassist.views.Startup"/>
+            <startup class="com.google.abapassist.views.Startup"/>
         </extension>
 
         <extension point="org.eclipse.ui.commands">
-            <category id="com.abapassist.commands.category" name="Sample Category"></category>
-            <command categoryId="com.abapassist.commands.category" name="ABAP Assist" id="com.abapassist.commands.ABAPAssist"></command>
+            <category id="com.google.abapassist.commands.category" name="Sample Category"></category>
+            <command categoryId="com.google.abapassist.commands.category" name="ABAP Assist" id="com.google.abapassist.commands.ABAPAssist"></command>
         </extension>
 
         <extension point="org.eclipse.ui.handlers">
-            <handler class="com.abapassist.handlers.EventHandler" commandId="com.abapassist.commands.ABAPAssist">
+            <handler class="com.google.abapassist.handlers.EventHandler" commandId="com.google.abapassist.commands.ABAPAssist">
                 <activeWhen>
                     <with variable="activeEditor">
                         <or>
@@ -37,18 +37,18 @@
         </extension>
 
         <extension point="org.eclipse.ui.bindings">
-            <key commandId="com.abapassist.commands.ABAPAssist" schemeId="org.eclipse.ui.defaultAcceleratorConfiguration" contextId="org.eclipse.ui.contexts.window" sequence="M1+6"></key>
+            <key commandId="com.google.abapassist.commands.ABAPAssist" schemeId="org.eclipse.ui.defaultAcceleratorConfiguration" contextId="org.eclipse.ui.contexts.window" sequence="M1+6"></key>
         </extension>
 
         <extension point="org.eclipse.ui.menus">
             <menuContribution locationURI="menu:org.eclipse.ui.main.menu?after=additions">
-                <menu icon="icons/Untitled.png" id="com.abapassist.menus.ABAPAssist" label="ABAP Assist" mnemonic="M">
-                    <command commandId="com.abapassist.commands.ABAPAssist" id="com.abapassist.menus.ABAPAssist" mnemonic="S"></command>
+                <menu icon="icons/Untitled.png" id="com.google.abapassist.menus.ABAPAssist" label="ABAP Assist" mnemonic="M">
+                    <command commandId="com.google.abapassist.commands.ABAPAssist" id="com.google.abapassist.menus.ABAPAssist" mnemonic="S"></command>
                 </menu>
             </menuContribution>
             <menuContribution locationURI="toolbar:org.eclipse.ui.main.toolbar?after=additions">
-                <toolbar id="com.abapassist.toolbars.sampleToolbar">
-                    <command id="com.abapassist.toolbars.ABAPAssist" commandId="com.abapassist.commands.ABAPAssist" icon="icons/Untitled.png" tooltip="ABAP Assist"></command>
+                <toolbar id="com.google.abapassist.toolbars.sampleToolbar">
+                    <command id="com.google.abapassist.toolbars.ABAPAssist" commandId="com.google.abapassist.commands.ABAPAssist" icon="icons/Untitled.png" tooltip="ABAP Assist"></command>
                 </toolbar>
             </menuContribution>
         </extension>

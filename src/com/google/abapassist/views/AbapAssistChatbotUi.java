@@ -1,4 +1,4 @@
-package com.abapassist.views;
+package com.google.abapassist.views;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.inject.Inject;

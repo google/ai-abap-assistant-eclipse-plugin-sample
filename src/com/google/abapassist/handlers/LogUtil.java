@@ -1,4 +1,4 @@
-package com.abapassist.handlers;
+package com.google.abapassist.handlers;
 
 import java.io.File;
 import java.io.FileWriter;

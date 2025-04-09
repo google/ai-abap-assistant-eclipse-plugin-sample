@@ -1,4 +1,4 @@
-package com.abapassist.views;
+package com.google.abapassist.views;
 
 import com.sap.adt.communication.message.IResponse;
 import com.sap.adt.communication.resources.AdtRestResourceFactory;

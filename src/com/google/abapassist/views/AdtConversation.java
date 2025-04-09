@@ -1,5 +1,5 @@
 
-package com.abapassist.views;
+package com.google.abapassist.views;
 
 import java.util.List;
 import javax.xml.bind.annotation.XmlAccessType;

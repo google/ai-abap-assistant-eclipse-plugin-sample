@@ -1,4 +1,4 @@
-package com.abapassist.handlers;
+package com.google.abapassist.handlers;
 
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;

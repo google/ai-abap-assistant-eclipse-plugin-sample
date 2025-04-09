@@ -1,4 +1,4 @@
-package com.abapassist.views;
+package com.google.abapassist.views;
 
 import com.sap.adt.tools.abapsource.ui.sources.editors.IAbapSourcePage;
 import org.eclipse.core.runtime.IAdaptable;
