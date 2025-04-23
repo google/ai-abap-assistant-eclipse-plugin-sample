@@ -1,77 +1,112 @@
 <?xml version="1.0" encoding="UTF-8"?>
     <?eclipse version="3.4"?>
-    <plugin
-        id="com.google.abapassist"
-        name="AbapAssistPlugin"
-        version="1.0.1">
+<plugin
+	id="com.google.abapassist"
+	name="AbapAssistPlugin"
+	version="1.0.1">
 
 
+	<extension point="org.eclipse.ui.startup">
+		<startup class="com.google.abapassist.views.Startup" />
+	</extension>
 
-        <extension point="org.eclipse.ui.startup">
-            <startup class="com.google.abapassist.views.Startup"/>
-        </extension>
+	<extension point="org.eclipse.ui.commands">
+		<category id="com.google.abapassist.commands.category"
+			name="Sample Category"></category>
+		<command categoryId="com.google.abapassist.commands.category"
+			name="ABAP Assist" id="com.google.abapassist.commands.ABAPAssist"></command>
+	</extension>
 
-        <extension point="org.eclipse.ui.commands">
-            <category id="com.google.abapassist.commands.category" name="Sample Category"></category>
-            <command categoryId="com.google.abapassist.commands.category" name="ABAP Assist" id="com.google.abapassist.commands.ABAPAssist"></command>
-        </extension>
+	<extension point="org.eclipse.ui.handlers">
+		<handler class="com.google.abapassist.handlers.EventHandler"
+			commandId="com.google.abapassist.commands.ABAPAssist">
+			<activeWhen>
+				<with variable="activeEditor">
+					<or>
+						<instanceof
+							value="com.sap.adt.programs.ui.internal.programs.editors.ProgramEditor" />
+						<instanceof
+							value="com.sap.adt.oo.ui.internal.classes.editors.ClassSourcePage" />
+						<instanceof
+							value="com.sap.adt.functions.ui.internal.fmodules.editors.FunctionModuleEditor" />
+						<instanceof
+							value="com.sap.adt.cds.ddl.ui.internal.editors.DdlSourceEditor" />
+						<instanceof
+							value="com.sap.adt.ddic.structure.ui.internal.editors.DdicStructureSourceEditor" />
+						<instanceof
+							value="com.sap.adt.enho.scp.ui.internal.editors.EnhancementImplementationSourceEditor" />
+						<instanceof
+							value="com.sap.adt.programs.ui.includes.editors.IncludeEditor" />
+						<instanceof
+							value="com.sap.adt.oo.ui.internal.interfaces.editors.InterfaceEditor" />
+						<instanceof
+							value="com.sap.adt.oo.ui.internal.classes.editors.MultiPageClassEditor" />
+					</or>
+				</with>
+			</activeWhen>
+		</handler>
+	</extension>
 
-        <extension point="org.eclipse.ui.handlers">
-            <handler class="com.google.abapassist.handlers.EventHandler" commandId="com.google.abapassist.commands.ABAPAssist">
-                <activeWhen>
-                    <with variable="activeEditor">
-                        <or>
-                            <instanceof value="com.sap.adt.programs.ui.internal.programs.editors.ProgramEditor"/>
-                            <instanceof value="com.sap.adt.oo.ui.internal.classes.editors.ClassSourcePage"/>
-                            <instanceof value="com.sap.adt.functions.ui.internal.fmodules.editors.FunctionModuleEditor"/>
-                            <instanceof value="com.sap.adt.cds.ddl.ui.internal.editors.DdlSourceEditor"/>
-                            <instanceof value="com.sap.adt.ddic.structure.ui.internal.editors.DdicStructureSourceEditor"/>
-                            <instanceof value="com.sap.adt.enho.scp.ui.internal.editors.EnhancementImplementationSourceEditor"/>
-                            <instanceof value="com.sap.adt.programs.ui.includes.editors.IncludeEditor"/>
-                            <instanceof value="com.sap.adt.oo.ui.internal.interfaces.editors.InterfaceEditor"/>
-                            <instanceof value="com.sap.adt.oo.ui.internal.classes.editors.MultiPageClassEditor"/>
-                        </or>
-                    </with>
-                </activeWhen>
-            </handler>
-        </extension>
+	<extension point="org.eclipse.ui.bindings">
+		<key commandId="com.google.abapassist.commands.ABAPAssist"
+			schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+			contextId="org.eclipse.ui.contexts.window" sequence="M1+6"></key>
+	</extension>
 
-        <extension point="org.eclipse.ui.bindings">
-            <key commandId="com.google.abapassist.commands.ABAPAssist" schemeId="org.eclipse.ui.defaultAcceleratorConfiguration" contextId="org.eclipse.ui.contexts.window" sequence="M1+6"></key>
-        </extension>
+	<extension point="org.eclipse.ui.menus">
+		<menuContribution
+			locationURI="menu:org.eclipse.ui.main.menu?after=additions">
+			<menu icon="icons/Untitled.png"
+				id="com.google.abapassist.menus.ABAPAssist" label="ABAP Assist"
+				mnemonic="M">
+				<command commandId="com.google.abapassist.commands.ABAPAssist"
+					id="com.google.abapassist.menus.ABAPAssist" mnemonic="S"></command>
+			</menu>
+		</menuContribution>
+		<menuContribution
+			locationURI="toolbar:org.eclipse.ui.main.toolbar?after=additions">
+			<toolbar id="com.google.abapassist.toolbars.sampleToolbar">
+				<command id="com.google.abapassist.toolbars.ABAPAssist"
+					commandId="com.google.abapassist.commands.ABAPAssist"
+					icon="icons/Untitled.png" tooltip="ABAP Assist"></command>
+			</toolbar>
+		</menuContribution>
+	</extension>
 
-        <extension point="org.eclipse.ui.menus">
-            <menuContribution locationURI="menu:org.eclipse.ui.main.menu?after=additions">
-                <menu icon="icons/Untitled.png" id="com.google.abapassist.menus.ABAPAssist" label="ABAP Assist" mnemonic="M">
-                    <command commandId="com.google.abapassist.commands.ABAPAssist" id="com.google.abapassist.menus.ABAPAssist" mnemonic="S"></command>
-                </menu>
-            </menuContribution>
-            <menuContribution locationURI="toolbar:org.eclipse.ui.main.toolbar?after=additions">
-                <toolbar id="com.google.abapassist.toolbars.sampleToolbar">
-                    <command id="com.google.abapassist.toolbars.ABAPAssist" commandId="com.google.abapassist.commands.ABAPAssist" icon="icons/Untitled.png" tooltip="ABAP Assist"></command>
-                </toolbar>
-            </menuContribution>
-        </extension>
+	<extension point="org.eclipse.ui.preferencePages">
+		<page class="com.google.abapassist.WorkbenchPreferencePage"
+			id="com.abapassist.preferencesPage" name="ABAP Assit Preferences"></page>
+	</extension>
 
-        <extension point="org.eclipse.ui.preferencePages">
-            <page class="com.abapassist.WorkbenchPreferencePage" id="com.abapassist.preferencesPage" name="ABAP Assit Preferences"></page>
-        </extension>
+	<extension id="com.google.abapassist.aa_marker"
+		name="Abap assist quick marker"
+		point="org.eclipse.core.resources.markers">
+		<super type="com.google.abapassist.super1"></super>
+		<persistent value="true"></persistent>
+		<attribute name="com.abapassist.attribute1"></attribute>
+	</extension>
 
-        <extension id="com.abapassist.aa_marker" name="Abap assist quick marker" point="org.eclipse.core.resources.markers">
-            <super type="com.abapassist.super1"></super>
-            <persistent value="true"></persistent>
-            <attribute name="com.abapassist.attribute1"></attribute>
-        </extension>
+	<extension point="org.eclipse.ui.views">
+		<category id="AbapAssistChatbot" name="ABAP Assist"></category>
+		<view category="AbapAssistChatbot"
+			class="com.google.abapassist.views.AbapAssistChatbotUi"
+			icon="icons/Untitled.png" id="com.google.abapassist.views.Chatbot"
+			inject="true" name="ABAP Assist Chatbot"></view>
+	</extension>
 
-        <extension point="org.eclipse.ui.views">
-            <category id="AbapAssistChatbot" name="AbapAssist"></category>
-            <view category="AbapAssistChatbot" class="com.abapassist.views.AbapAssistChatbotUi" icon="icons/Untitled.png" id="com.abapassist.views.Chatbot" inject="true" name="Abap Assist Chatbot"></view>
-        </extension>
+	<extension point="org.eclipse.ui.perspectiveExtensions">
+		<perspectiveExtension targetID="org.eclipse.jdt.ui.JavaPerspective">
+			<view id="com.abapassist.views.BrowserView" relationship="stack"
+				relative="org.eclipse.ui.views.ProblemView"></view>
+		</perspectiveExtension>
+	</extension>
 
-        <extension point="org.eclipse.ui.perspectiveExtensions">
-            <perspectiveExtension targetID="org.eclipse.jdt.ui.JavaPerspective">
-                <view id="com.abapassist.views.BrowserView" relationship="stack" relative="org.eclipse.ui.views.ProblemView"></view>
-            </perspectiveExtension>
-        </extension>
+	<extension point="com.sap.adt.tools.core.ui.quickAssistProcessors">
+		<quickAssistProcessor
+			id="com.google.abapassist.quickAssist"
+			class="com.google.abapassist.handlers.QuickAssistProcessor"
+			name="ABAP Assist Quick Assist Processor">
+		</quickAssistProcessor>
+	</extension>
 
-    </plugin>
+</plugin>

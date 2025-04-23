@@ -22,7 +22,7 @@ public class EventHandler extends AbstractHandler {
 		 System.out.println(activeEditor.toString());
 				try {
 					LogUtil.writeToLog("Trying to open Abapassist view", "AbapAssist.log");
-					page.showView("com.abapassist.views.Chatbot");
+					page.showView("com.google.abapassist.views.Chatbot");
 				} catch (PartInitException e) {
 					// TODO Auto-generated catch block
 					LogUtil.writeToLog(e.toString(), "AbapAssist.log");
