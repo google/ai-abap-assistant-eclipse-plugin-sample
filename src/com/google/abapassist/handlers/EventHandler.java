@@ -10,26 +10,27 @@ import org.eclipse.ui.PlatformUI;
 
 public class EventHandler extends AbstractHandler {
 
-
 	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
-		
-		LogUtil.writeToLog("Entering EventHandler->execute method", "AbapAssist.log");
 
-		
-		IWorkbenchPage page =  PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
-		 IEditorPart activeEditor = page.getActiveEditor();
-		 System.out.println(activeEditor.toString());
-				try {
-					LogUtil.writeToLog("Trying to open Abapassist view", "AbapAssist.log");
-					page.showView("com.google.abapassist.views.Chatbot");
-				} catch (PartInitException e) {
-					// TODO Auto-generated catch block
-					LogUtil.writeToLog(e.toString(), "AbapAssist.log");
-					e.printStackTrace();
-				}
+		LogUtil.writeToLog("Entering EventHandler->execute method",
+				"AbapAssist.log");
 
-		 LogUtil.writeToLog("Leaving EventHandler->execute method", "AbapAssist.log");	
+		IWorkbenchPage page = PlatformUI.getWorkbench()
+				.getActiveWorkbenchWindow().getActivePage();
+		IEditorPart activeEditor = page.getActiveEditor();
+		System.out.println(activeEditor.toString());
+		try {
+			LogUtil.writeToLog("Trying to open Abapassist view",
+					"AbapAssist.log");
+			page.showView("com.google.abapassist.views.Chatbot");
+		} catch (PartInitException e) {
+			LogUtil.writeToLog(e.toString(), "AbapAssist.log");
+			e.printStackTrace();
+		}
+
+		LogUtil.writeToLog("Leaving EventHandler->execute method",
+				"AbapAssist.log");
 		return null;
 	}
 }
