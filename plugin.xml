@@ -3,7 +3,7 @@
 <plugin
 	id="com.google.abapassist"
 	name="AbapAssistPlugin"
-	version="1.0.1">
+	version="1.1.1">
 
 
 	<extension point="org.eclipse.ui.startup">
@@ -56,7 +56,7 @@
 	<extension point="org.eclipse.ui.menus">
 		<menuContribution
 			locationURI="menu:org.eclipse.ui.main.menu?after=additions">
-			<menu icon="icons/Untitled.png"
+			<menu icon="icons/aa.png"
 				id="com.google.abapassist.menus.ABAPAssist" label="ABAP Assist"
 				mnemonic="M">
 				<command commandId="com.google.abapassist.commands.ABAPAssist"
@@ -68,7 +68,7 @@
 			<toolbar id="com.google.abapassist.toolbars.sampleToolbar">
 				<command id="com.google.abapassist.toolbars.ABAPAssist"
 					commandId="com.google.abapassist.commands.ABAPAssist"
-					icon="icons/Untitled.png" tooltip="ABAP Assist"></command>
+					icon="icons/aa.png" tooltip="ABAP Assist"></command>
 			</toolbar>
 		</menuContribution>
 	</extension>
@@ -90,7 +90,7 @@
 		<category id="AbapAssistChatbot" name="ABAP Assist"></category>
 		<view category="AbapAssistChatbot"
 			class="com.google.abapassist.views.AbapAssistChatbotUi"
-			icon="icons/Untitled.png" id="com.google.abapassist.views.Chatbot"
+			icon="icons/aa.png" id="com.google.abapassist.views.Chatbot"
 			inject="true" name="ABAP Assist Chatbot"></view>
 	</extension>
 

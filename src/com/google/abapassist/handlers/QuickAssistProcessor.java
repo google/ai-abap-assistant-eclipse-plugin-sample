@@ -34,6 +34,8 @@ public class QuickAssistProcessor implements IQuickAssistProcessor {
 	public ICompletionProposal[] computeQuickAssistProposals(
 			IQuickAssistInvocationContext context) {
 		CompletionProposal completionProposal = null;
+		String option;
+		String prompt;
 
 		try {
 			sourceEditor = new AbapSourceCodeEditor()
@@ -41,19 +43,33 @@ public class QuickAssistProcessor implements IQuickAssistProcessor {
 			document = sourceEditor.getDocument();
 			selectedCode = sourceEditor.getSelectedCode();
 			offset = sourceEditor.getSelection().getOffset();
+			String allCode = document.get();
+			int cursor = context.getOffset();
 			int selectedCodelength = sourceEditor.getSelection()
 					.getLength();
 			if (selectedCodelength == 0) {
-				String allCode = document.get();
-				int cursor = context.getOffset();
+				option = "content";
+				prompt = "Suggest what lines of code should come next based on the given context";
+
 				selectedCode = allCode.substring(0, cursor)
-						.concat(" {suggest} ").concat(allCode.substring(
-								cursor, allCode.length() - cursor));
+						.concat(" {suggest} ").concat(allCode
+								.substring(cursor, allCode.length()));
+
+			} else {
+				option = "eclipseRefactor";
+				prompt = "Refactor this code within the given context";
+				selectedCode = allCode.substring(0, cursor)
+						.concat(" {refactor} ").concat(selectedCode)
+						.concat(" {refactor} ")
+						.concat(allCode.substring(
+								cursor + selectedCodelength,
+								allCode.length()));
 			}
 
 			quickAssistDataSource = new QuickAssistDataSource();
-			String proposal = quickAssistDataSource.processResponse(
-					quickAssistDataSource.getProposals(selectedCode));
+			String proposal = quickAssistDataSource
+					.processResponse(quickAssistDataSource
+							.getProposals(selectedCode, option, prompt));
 
 			completionProposal = new CompletionProposal(proposal, offset,
 					0, proposal.length());

@@ -34,8 +34,6 @@ public class QuickAssistDataSource {
 	private String resourceUri;
 	private IResponse restResponse;
 	private String message;
-	private static final String prompt = "Suggest what lines of code should come next based on the given context";
-	private static final String option = "content";
 
 	public QuickAssistDataSource() {
 
@@ -58,7 +56,7 @@ public class QuickAssistDataSource {
 		this.destination = abapProject.getDestinationId();
 	}
 
-	public String getProposals(String context) {
+	public String getProposals(String context, String option, String prompt) {
 
 		String response = "";
 		String convoId = "";
@@ -146,8 +144,8 @@ public class QuickAssistDataSource {
 				}
 
 				if (lvCodeEnd > 0) {
-					int lvOffset = lvCodeStart + 11;
-					int lvLength = lvCodeEnd - lvCodeStart - 11;
+					int lvOffset = lvCodeStart + 8;
+					int lvLength = lvCodeEnd - lvCodeStart - 9;
 					String lvCode = result.substring(lvOffset,
 							lvOffset + lvLength);
 					extractedcode.put(String.valueOf(id), lvCode);
