@@ -22,7 +22,9 @@ Require-Bundle: org.eclipse.ui,
  com.google.gson,
  jakarta.xml.bind,
  com.fasterxml.jackson.core.jackson-core,
- com.fasterxml.jackson.core.jackson-databind
+ com.fasterxml.jackson.core.jackson-databind,
+ com.sap.adt.tools.core.ui;bundle-version="3.48.2",
+ com.sap.adt.util.ui;bundle-version="3.48.1"
 Automatic-Module-Name: com.google.abapassist
 Bundle-ClassPath: jackson-core-2.18.2.jar,
  jackson-databind-2.18.2.jar

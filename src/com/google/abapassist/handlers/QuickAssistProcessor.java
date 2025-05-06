@@ -1,7 +1,6 @@
 package com.google.abapassist.handlers;
 
 import org.eclipse.jface.text.IDocument;
-import org.eclipse.jface.text.contentassist.CompletionProposal;
 import org.eclipse.jface.text.contentassist.ICompletionProposal;
 import org.eclipse.jface.text.quickassist.IQuickAssistInvocationContext;
 import org.eclipse.jface.text.quickassist.IQuickAssistProcessor;
@@ -9,9 +8,10 @@ import org.eclipse.jface.text.source.Annotation;
 
 import com.google.abapassist.services.QuickAssistDataSource;
 import com.google.abapassist.views.AbapSourceCodeEditor;
+import com.google.abapassist.services.QuickFixProposal;
 
 public class QuickAssistProcessor implements IQuickAssistProcessor {
-
+	
 	private QuickAssistDataSource quickAssistDataSource;
 	private AbapSourceCodeEditor sourceEditor;
 	private IDocument document;
@@ -33,7 +33,7 @@ public class QuickAssistProcessor implements IQuickAssistProcessor {
 	@Override
 	public ICompletionProposal[] computeQuickAssistProposals(
 			IQuickAssistInvocationContext context) {
-		CompletionProposal completionProposal = null;
+		QuickFixProposal completionProposal;
 		String option;
 		String prompt;
 
@@ -71,14 +71,15 @@ public class QuickAssistProcessor implements IQuickAssistProcessor {
 					.processResponse(quickAssistDataSource
 							.getProposals(selectedCode, option, prompt));
 
-			completionProposal = new CompletionProposal(proposal, offset,
-					0, proposal.length());
+			completionProposal = new QuickFixProposal(proposal, offset,
+					0, proposal.length(), null, "ABAP Assist", null,
+					proposal, false);
 
 		} catch (Exception e) {
 			LogUtil.writeToLog(e.toString(), "AbapAssist.log");
 			e.printStackTrace();
 		}
-
+		
 		return new ICompletionProposal[]{completionProposal};
 	}
 
