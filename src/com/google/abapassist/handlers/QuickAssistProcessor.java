@@ -9,6 +9,9 @@ import org.eclipse.jface.text.source.Annotation;
 import com.google.abapassist.services.QuickAssistDataSource;
 import com.google.abapassist.views.AbapSourceCodeEditor;
 import com.google.abapassist.services.QuickFixProposal;
+import com.google.abapassist.preference.Activator;
+import com.google.abapassist.preference.PreferenceConstants;
+
 
 public class QuickAssistProcessor implements IQuickAssistProcessor {
 	
@@ -17,6 +20,7 @@ public class QuickAssistProcessor implements IQuickAssistProcessor {
 	private IDocument document;
 	public int offset;
 	private String selectedCode;
+	public String model;
 
 	@Override
 	public boolean canAssist(IQuickAssistInvocationContext arg0) {
@@ -33,10 +37,20 @@ public class QuickAssistProcessor implements IQuickAssistProcessor {
 	@Override
 	public ICompletionProposal[] computeQuickAssistProposals(
 			IQuickAssistInvocationContext context) {
-		QuickFixProposal completionProposal;
+		QuickFixProposal completionProposal = null;
 		String option;
 		String prompt;
-
+		
+		model = Activator.getDefault()
+				.getPreferenceStore()
+				.getString(PreferenceConstants.P_AI_MODEL);
+		Boolean isQuickAssistEnabled = Activator
+				.getDefault()
+				.getPreferenceStore()
+				.getBoolean(PreferenceConstants.P_ENABLE_QUICK_ASSIST);
+		
+		if(isQuickAssistEnabled) {
+		
 		try {
 			sourceEditor = new AbapSourceCodeEditor()
 					.loadEditorAttributes();
@@ -69,7 +83,7 @@ public class QuickAssistProcessor implements IQuickAssistProcessor {
 			quickAssistDataSource = new QuickAssistDataSource();
 			String proposal = quickAssistDataSource
 					.processResponse(quickAssistDataSource
-							.getProposals(selectedCode, option, prompt));
+							.getProposals(selectedCode, option, prompt, model));
 
 			completionProposal = new QuickFixProposal(proposal, offset,
 					0, proposal.length(), null, "ABAP Assist", null,
@@ -79,7 +93,7 @@ public class QuickAssistProcessor implements IQuickAssistProcessor {
 			LogUtil.writeToLog(e.toString(), "AbapAssist.log");
 			e.printStackTrace();
 		}
-		
+		}
 		return new ICompletionProposal[]{completionProposal};
 	}
 

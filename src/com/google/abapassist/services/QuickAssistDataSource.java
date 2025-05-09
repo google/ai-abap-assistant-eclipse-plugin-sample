@@ -56,7 +56,7 @@ public class QuickAssistDataSource {
 		this.destination = abapProject.getDestinationId();
 	}
 
-	public String getProposals(String context, String option, String prompt) {
+	public String getProposals(String context, String option, String prompt, String model) {
 
 		String response = "";
 		String convoId = "";
@@ -64,7 +64,7 @@ public class QuickAssistDataSource {
 		resourceUri = "/sap/bc/adt/yabapassist/adt_resource/contentAssistProposals?";
 
 		resourceUri = resourceUri + "model="
-				+ URLEncoder.encode("gemini 1.5", StandardCharsets.UTF_8)
+				+ model
 				+ '&' + "prompt="
 				+ URLEncoder.encode(prompt, StandardCharsets.UTF_8) + '&'
 				+ "context="
