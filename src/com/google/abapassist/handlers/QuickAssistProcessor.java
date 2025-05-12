@@ -12,15 +12,15 @@ import com.google.abapassist.services.QuickFixProposal;
 import com.google.abapassist.preference.Activator;
 import com.google.abapassist.preference.PreferenceConstants;
 
-
 public class QuickAssistProcessor implements IQuickAssistProcessor {
-	
+
 	private QuickAssistDataSource quickAssistDataSource;
 	private AbapSourceCodeEditor sourceEditor;
 	private IDocument document;
 	public int offset;
 	private String selectedCode;
 	public String model;
+	private QuickFixProposal completionProposal;
 
 	@Override
 	public boolean canAssist(IQuickAssistInvocationContext arg0) {
@@ -35,66 +35,54 @@ public class QuickAssistProcessor implements IQuickAssistProcessor {
 	}
 
 	@Override
-	public ICompletionProposal[] computeQuickAssistProposals(
-			IQuickAssistInvocationContext context) {
+	public ICompletionProposal[] computeQuickAssistProposals(IQuickAssistInvocationContext context) {
 		QuickFixProposal completionProposal = null;
 		String option;
 		String prompt;
-		
-		model = Activator.getDefault()
-				.getPreferenceStore()
-				.getString(PreferenceConstants.P_AI_MODEL);
-		Boolean isQuickAssistEnabled = Activator
-				.getDefault()
-				.getPreferenceStore()
+
+		model = Activator.getDefault().getPreferenceStore().getString(PreferenceConstants.P_AI_MODEL);
+		Boolean isQuickAssistEnabled = Activator.getDefault().getPreferenceStore()
 				.getBoolean(PreferenceConstants.P_ENABLE_QUICK_ASSIST);
-		
-		if(isQuickAssistEnabled) {
-		
-		try {
-			sourceEditor = new AbapSourceCodeEditor()
-					.loadEditorAttributes();
-			document = sourceEditor.getDocument();
-			selectedCode = sourceEditor.getSelectedCode();
-			offset = sourceEditor.getSelection().getOffset();
-			String allCode = document.get();
-			int cursor = context.getOffset();
-			int selectedCodelength = sourceEditor.getSelection()
-					.getLength();
-			if (selectedCodelength == 0) {
-				option = "content";
-				prompt = "Suggest what lines of code should come next based on the given context";
 
-				selectedCode = allCode.substring(0, cursor)
-						.concat(" {suggest} ").concat(allCode
-								.substring(cursor, allCode.length()));
+		if (isQuickAssistEnabled) {
 
-			} else {
-				option = "eclipseRefactor";
-				prompt = "Refactor this code within the given context";
-				selectedCode = allCode.substring(0, cursor)
-						.concat(" {refactor} ").concat(selectedCode)
-						.concat(" {refactor} ")
-						.concat(allCode.substring(
-								cursor + selectedCodelength,
-								allCode.length()));
+			try {
+				sourceEditor = new AbapSourceCodeEditor().loadEditorAttributes();
+				document = sourceEditor.getDocument();
+				selectedCode = sourceEditor.getSelectedCode();
+				offset = sourceEditor.getSelection().getOffset();
+				String allCode = document.get();
+				int cursor = context.getOffset();
+				int selectedCodelength = sourceEditor.getSelection().getLength();
+				if (selectedCodelength == 0) {
+					option = "content";
+					prompt = "Suggest what lines of code should come next based on the given context";
+
+					selectedCode = allCode.substring(0, cursor).concat(" {suggest} ")
+							.concat(allCode.substring(cursor, allCode.length()));
+
+				} else {
+					option = "eclipseRefactor";
+					prompt = "Refactor this code within the given context";
+					selectedCode = allCode.substring(0, cursor).concat(" {refactor} ").concat(selectedCode)
+							.concat(" {refactor} ")
+							.concat(allCode.substring(cursor + selectedCodelength, allCode.length()));
+				}
+
+				quickAssistDataSource = new QuickAssistDataSource();
+				String proposal = quickAssistDataSource
+						.processResponse(quickAssistDataSource.getProposals(selectedCode, option, prompt, model));
+
+				completionProposal = new QuickFixProposal(proposal, offset, 0, proposal.length(), null, "ABAP Assist",
+						null, proposal, false);
+
+			} catch (Exception e) {
+				LogUtil.writeToLog(e.toString(), "AbapAssist.log");
+				e.printStackTrace();
 			}
-
-			quickAssistDataSource = new QuickAssistDataSource();
-			String proposal = quickAssistDataSource
-					.processResponse(quickAssistDataSource
-							.getProposals(selectedCode, option, prompt, model));
-
-			completionProposal = new QuickFixProposal(proposal, offset,
-					0, proposal.length(), null, "ABAP Assist", null,
-					proposal, false);
-
-		} catch (Exception e) {
-			LogUtil.writeToLog(e.toString(), "AbapAssist.log");
-			e.printStackTrace();
 		}
-		}
-		return new ICompletionProposal[]{completionProposal};
+		return completionProposal != null ? new ICompletionProposal[] { completionProposal }
+				: new ICompletionProposal[0];
 	}
 
 	@Override

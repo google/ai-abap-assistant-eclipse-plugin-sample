@@ -56,7 +56,8 @@ public class QuickAssistDataSource {
 		this.destination = abapProject.getDestinationId();
 	}
 
-	public String getProposals(String context, String option, String prompt, String model) {
+	public String getProposals(String context, String option,
+			String prompt, String model) {
 
 		String response = "";
 		String convoId = "";
@@ -64,8 +65,8 @@ public class QuickAssistDataSource {
 		resourceUri = "/sap/bc/adt/yabapassist/adt_resource/contentAssistProposals?";
 
 		resourceUri = resourceUri + "model="
-				+ model
-				+ '&' + "prompt="
+				+ URLEncoder.encode(model, StandardCharsets.UTF_8) + '&'
+				+ "prompt="
 				+ URLEncoder.encode(prompt, StandardCharsets.UTF_8) + '&'
 				+ "context="
 				+ URLEncoder.encode(context, StandardCharsets.UTF_8) + '&'
@@ -119,7 +120,7 @@ public class QuickAssistDataSource {
 			int lvCodeEnd;
 			boolean sqlFlag = false;
 			int lvCodeStart = result.indexOf("```abap");
-			
+
 			if (lvCodeStart == -1) {
 				lvCodeStart = result.indexOf("```sql");
 				sqlFlag = true;
