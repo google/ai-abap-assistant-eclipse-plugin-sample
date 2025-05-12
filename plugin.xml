@@ -74,7 +74,7 @@
 	</extension>
 
 	<extension point="org.eclipse.ui.preferencePages">
-		<page class="com.google.abapassist.preference.preferencePage"
+		<page class="com.google.abapassist.preference.AbapAssistPreferencePage"
 			id="com.google.abapassist.preferencesPage" name="ABAP Assist Preferences"></page>
 	</extension>
 
