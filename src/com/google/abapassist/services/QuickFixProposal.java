@@ -25,7 +25,8 @@ import com.sap.adt.tools.abapsource.ui.sources.prettyprinter.PrettyPrintHandler;
 import com.sap.adt.tools.core.ui.editors.IAdtFormEditor;
 
 public class QuickFixProposal implements IQuickAssistProposal {
-	private static IHandlerService handlerService = PlatformUI.getWorkbench().getService(IHandlerService.class);
+	private static IHandlerService handlerService = PlatformUI
+			.getWorkbench().getService(IHandlerService.class);
 	/** The string to be displayed in the completion proposal popup. */
 	private String fDisplayString;
 	/** The replacement string. */
@@ -47,22 +48,31 @@ public class QuickFixProposal implements IQuickAssistProposal {
 
 	/**
 	 * Creates a new completion proposal based on the provided information. The
-	 * replacement string is considered being the display string too. All remaining
-	 * fields are set to <code>null</code>.
+	 * replacement string is considered being the display string too. All
+	 * remaining fields are set to <code>null</code>.
 	 *
-	 * @param replacementString the actual string to be inserted into the document
-	 * @param replacementOffset the offset of the text to be replaced
-	 * @param replacementLength the length of the text to be replaced
-	 * @param cursorPosition    the position of the cursor following the insert
-	 *                          relative to replacementOffset
+	 * @param replacementString
+	 *            the actual string to be inserted into the document
+	 * @param replacementOffset
+	 *            the offset of the text to be replaced
+	 * @param replacementLength
+	 *            the length of the text to be replaced
+	 * @param cursorPosition
+	 *            the position of the cursor following the insert relative to
+	 *            replacementOffset
 	 */
-	public QuickFixProposal(String replacementString, int replacementOffset, int replacementLength,
+	public QuickFixProposal(String replacementString,
+			int replacementOffset, int replacementLength,
 			int cursorPosition) {
-		this(replacementString, replacementOffset, replacementLength, cursorPosition, null, null, null, null, false);
+		this(replacementString, replacementOffset, replacementLength,
+				cursorPosition, null, null, null, null, false);
 	}
 
-	public QuickFixProposal(String replacementString, int replacementOffset, int replacementLength, int cursorPosition,
-			Image image, String displayString, IContextInformation contextInformation, String additionalProposalInfo,
+	public QuickFixProposal(String replacementString,
+			int replacementOffset, int replacementLength,
+			int cursorPosition, Image image, String displayString,
+			IContextInformation contextInformation,
+			String additionalProposalInfo,
 			Boolean callPrettyPrintForBlock) {
 		Assert.isNotNull(replacementString);
 		Assert.isTrue(replacementOffset >= 0);
@@ -83,7 +93,8 @@ public class QuickFixProposal implements IQuickAssistProposal {
 	@Override
 	public void apply(IDocument document) {
 		try {
-			document.replace(fReplacementOffset, fReplacementLength, fReplacementString);
+			document.replace(fReplacementOffset, fReplacementLength,
+					fReplacementString);
 			callPrettyPrintOfBlock(document);
 
 		} catch (BadLocationException x) {
@@ -104,10 +115,12 @@ public class QuickFixProposal implements IQuickAssistProposal {
 	}
 
 	private void setSelectionOnDocument(IDocument document) {
-		IEditorPart activeEditor = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()
+		IEditorPart activeEditor = PlatformUI.getWorkbench()
+				.getActiveWorkbenchWindow().getActivePage()
 				.getActiveEditor();
 		IAbapSourcePage aSP = getTextEditor(activeEditor);
-		TextSelection tS = new TextSelection(document, fReplacementOffset, fReplacementString.length());
+		TextSelection tS = new TextSelection(document, fReplacementOffset,
+				fReplacementString.length());
 		aSP.getSelectionProvider().setSelection(tS);
 	}
 
@@ -118,9 +131,12 @@ public class QuickFixProposal implements IQuickAssistProposal {
 			@Override
 			public void run() {
 				try {
-					handlerService.executeCommand(PrettyPrintHandler.COMMAND_ID_FORMAT_BLOCK, null);
+					handlerService.executeCommand(
+							PrettyPrintHandler.COMMAND_ID_FORMAT_BLOCK,
+							null);
 
-				} catch (ExecutionException | NotDefinedException | NotEnabledException | NotHandledException e) {
+				} catch (ExecutionException | NotDefinedException
+						| NotEnabledException | NotHandledException e) {
 					e.printStackTrace();
 				}
 			}
@@ -130,7 +146,8 @@ public class QuickFixProposal implements IQuickAssistProposal {
 	}
 
 	private void setFocutOnActiveEditor() {
-		IEditorPart activeEditor = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()
+		IEditorPart activeEditor = PlatformUI.getWorkbench()
+				.getActiveWorkbenchWindow().getActivePage()
 				.getActiveEditor();
 		activeEditor.setFocus();
 	}
@@ -139,12 +156,14 @@ public class QuickFixProposal implements IQuickAssistProposal {
 		IAbapSourcePage textEditor = null;
 		if (editor instanceof MultiPageEditorPart) {
 			MultiPageEditorPart multiPageEditor = (MultiPageEditorPart) editor;
-			IEditorPart activePage = (IEditorPart) multiPageEditor.getSelectedPage();
+			IEditorPart activePage = (IEditorPart) multiPageEditor
+					.getSelectedPage();
 			if (activePage instanceof IAbapSourcePage) {
 				textEditor = (IAbapSourcePage) activePage;
 			} else if (multiPageEditor instanceof IAdtFormEditor) {
 
-				IEditorPart ed = ((IAdtFormEditor) multiPageEditor).getActiveEditor();
+				IEditorPart ed = ((IAdtFormEditor) multiPageEditor)
+						.getActiveEditor();
 				if (ed instanceof IAbapSourcePage) {
 					textEditor = (IAbapSourcePage) ed;
 				}

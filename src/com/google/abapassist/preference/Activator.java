@@ -26,13 +26,6 @@ public class Activator extends AbstractUIPlugin {
     public void start(BundleContext context) throws Exception {
         super.start(context);
         plugin = this;
-        setDefaultPreferences();
-    }
-
-    private void setDefaultPreferences() {
-        IEclipsePreferences defaultPrefs = InstanceScope.INSTANCE.getNode(PLUGIN_ID);
-        defaultPrefs.putBoolean(PreferenceConstants.P_ENABLE_QUICK_ASSIST, true); 
-        defaultPrefs.put(PreferenceConstants.P_AI_MODEL, "Gemini Pro"); 
     }
 
     /*
