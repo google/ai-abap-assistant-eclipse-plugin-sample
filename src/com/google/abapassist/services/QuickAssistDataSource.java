@@ -27,6 +27,11 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.eclipse.ui.IEditorInput;
+import org.eclipse.ui.IEditorPart;
+import org.eclipse.ui.IFileEditorInput;
+import org.eclipse.core.resources.IProject;
+
 public class QuickAssistDataSource {
 
 	private IRestResourceFactory restResourceFactory;
@@ -34,6 +39,7 @@ public class QuickAssistDataSource {
 	private String resourceUri;
 	private IResponse restResponse;
 	private String message;
+	private IAbapProject abapProject;
 
 	public QuickAssistDataSource() {
 
@@ -43,11 +49,44 @@ public class QuickAssistDataSource {
 				.createRestResourceFactory();
 
 		// Get available projects in the workspace
-		IAbapProjectService psf = AdtProjectServiceFactory
-				.createProjectService();
+		// IAbapProjectService psf = AdtProjectServiceFactory
+		// .createProjectService();
 
-		IAbapProject abapProject = psf.getAvailableAbapProjects()[0]
-				.getAdapter(IAbapProject.class);
+		// IAbapProject abapProject = psf.getAvailableAbapProjects()[0]
+		// .getAdapter(IAbapProject.class);
+		IEditorPart activeEditor = PlatformUI.getWorkbench()
+				.getActiveWorkbenchWindow().getActivePage()
+				.getActiveEditor();
+
+		abapProject = null;
+		if (activeEditor != null) {
+			IEditorInput editorInput = activeEditor.getEditorInput();
+			IProject project = null;
+
+			// Check if the input is a standard workspace file
+			if (editorInput instanceof IFileEditorInput) {
+				project = ((IFileEditorInput) editorInput).getFile()
+						.getProject();
+			}
+
+			IAbapProjectService psf = AdtProjectServiceFactory
+					.createProjectService();
+			IProject[] availableProjects = psf.getAvailableAbapProjects();
+			if (availableProjects.length > 0) {
+				abapProject = availableProjects[0]
+						.getAdapter(IAbapProject.class);
+				for (IProject proj : availableProjects) {
+					if (proj.getName().equals(project.getName())) {
+						abapProject = proj.getAdapter(IAbapProject.class);
+						break;
+					}
+				}
+			} else {
+				throw new IllegalStateException(
+						"Could not find an active ABAP project.");
+			}
+
+		}
 
 		// Trigger logon dialog if necessary
 		AdtLogonServiceUIFactory.createLogonServiceUI().ensureLoggedOn(
@@ -62,7 +101,11 @@ public class QuickAssistDataSource {
 		String response = "";
 		String convoId = "";
 
-		resourceUri = "/sap/bc/adt/yabapassist/adt_resource/contentAssistProposals?";
+		if (abapProject.getDestinationId().contains("MD1")) {
+	    	resourceUri = "/sap/bc/adt/zabapassist/adt_resource/contentAssistProposals?";
+	    } else {
+	    	resourceUri = "/sap/bc/adt/yabapassist/adt_resource/contentAssistProposals?";
+	    }
 
 		resourceUri = resourceUri + "model="
 				+ URLEncoder.encode(model, StandardCharsets.UTF_8) + '&'

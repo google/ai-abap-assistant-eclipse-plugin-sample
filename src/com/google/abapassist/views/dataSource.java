@@ -16,6 +16,8 @@ import java.nio.charset.StandardCharsets;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
+
+import org.eclipse.core.resources.IProject;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.ITextSelection;
@@ -24,188 +26,244 @@ import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.texteditor.ITextEditor;
-
+import org.eclipse.ui.IFileEditorInput;
 /**
- * Handles the data source for the ABAP assist plugin. It provides methods to interact with the SAP
- * backend and retrieve data.
+ * Handles the data source for the ABAP assist plugin. It provides methods to
+ * interact with the SAP backend and retrieve data.
  */
 public class dataSource {
 
-  public IEditorPart activeEditor;
-  public String resourceUri;
-  public String selectedContext;
-  int lvLength, lvOffset, delimitLength;
-  public IResponse restResponse;
-  public String message, responsefrommodel;
-  private String destination;
-  public IRestResourceFactory restResourceFactory;
-  public IDocument document;
-  public ITextSelection selection;
-  public ITextEditor textEditor;
-  public IEditorInput einput;
-  public ISelectionProvider selectionprovider;
-  String eid;
-  public String viewId;
-  public String convoId;
+	public IEditorPart activeEditor;
+	public String resourceUri;
+	public String selectedContext;
+	int lvLength, lvOffset, delimitLength;
+	public IResponse restResponse;
+	public String message, responsefrommodel;
+	private String destination;
+	public IRestResourceFactory restResourceFactory;
+	public IDocument document;
+	public ITextSelection selection;
+	public ITextEditor textEditor;
+	public IEditorInput einput;
+	public ISelectionProvider selectionprovider;
+	String eid;
+	public String viewId;
+	public String convoId;
 
-  public AdtConversation AdtConversation;
-  public AdtConversation.Template[] templates;
-  public AdtConversation.Model[] models;
+	public AdtConversation AdtConversation;
+	public AdtConversation.Template[] templates;
+	public AdtConversation.Model[] models;
+	private IAbapProject abapProject;
 
-  public dataSource() {
+	public dataSource() {
 
-    // rest call to sap
-    // Create resource factory
-    restResourceFactory = AdtRestResourceFactory.createRestResourceFactory();
+		// rest call to sap
+		// Create resource factory
+		restResourceFactory = AdtRestResourceFactory
+				.createRestResourceFactory();
 
-    // Get available projects in the workspace
-    IAbapProjectService psf = AdtProjectServiceFactory.createProjectService();
+		// Get available projects in the workspace
+		// IAbapProjectService psf =
+		// AdtProjectServiceFactory.createProjectService();
 
-    IAbapProject abapProject = psf.getAvailableAbapProjects()[0].getAdapter(IAbapProject.class);
+		// IAbapProject abapProject =
+		// psf.getAvailableAbapProjects()[0].getAdapter(IAbapProject.class);
+		IEditorPart activeEditor = PlatformUI.getWorkbench()
+				.getActiveWorkbenchWindow().getActivePage()
+				.getActiveEditor();
 
-    // Trigger logon dialog if necessary
-    AdtLogonServiceUIFactory.createLogonServiceUI()
-        .ensureLoggedOn(
-            abapProject.getDestinationData(), PlatformUI.getWorkbench().getProgressService());
-    this.destination = abapProject.getDestinationId();
-  }
+		abapProject = null;
+		if (activeEditor != null) {
+			IEditorInput editorInput = activeEditor.getEditorInput();
+			IProject project = null;
 
-  public void insertCode(IDocument editor, int offset, String code, String delimiter) {
+			// Check if the input is a standard workspace file
+			if (editorInput instanceof IFileEditorInput) {
+				project = ((IFileEditorInput) editorInput).getFile()
+						.getProject();
+			}
 
-    try {
-      code = delimiter + code + delimiter;
-      editor.replace(offset, 0, code);
-    } catch (BadLocationException e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
-    }
-  }
+			IAbapProjectService psf = AdtProjectServiceFactory
+					.createProjectService();
+			IProject[] availableProjects = psf.getAvailableAbapProjects();
+			if (availableProjects.length > 0) {
+				abapProject = availableProjects[0]
+						.getAdapter(IAbapProject.class);
+				for (IProject proj : availableProjects) {
+					if (proj.getName().equals(project.getName())) {
+						abapProject = proj.getAdapter(IAbapProject.class);
+						break;
+					}
+				}
+			} else {
+				throw new IllegalStateException(
+						"Could not find an active ABAP project.");
+			}
 
-  public String getContext() {
-    return selectedContext;
-  }
+		}
 
-  public AdtConversation init() {
-    AdtConversation data = null;
-    String username = null;
-    resourceUri = "/sap/bc/adt/yabapassist/adt_resource/conversations?";
-    resourceUri = resourceUri + "userinfo=x";
-    URI abapAssistUri = URI.create(resourceUri);
-    IRestResource abapAssistResource =
-        restResourceFactory.createResourceWithStatelessSession(abapAssistUri, destination);
+		// Trigger logon dialog if necessary
+		AdtLogonServiceUIFactory.createLogonServiceUI().ensureLoggedOn(
+				abapProject.getDestinationData(),
+				PlatformUI.getWorkbench().getProgressService());
+		this.destination = abapProject.getDestinationId();
+	}
 
-    try {
-      // Trigger GET request on resource data
-      restResponse = abapAssistResource.get(null, IResponse.class);
-      message = restResponse.getBody().toString();
+	public void insertCode(IDocument editor, int offset, String code,
+			String delimiter) {
 
-      JAXBContext jaxbContext = JAXBContext.newInstance(AdtConversation.class);
-      Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
-      data = (AdtConversation) unmarshaller.unmarshal(new StringReader(message));
+		try {
+			code = delimiter + code + delimiter;
+			editor.replace(offset, 0, code);
+		} catch (BadLocationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
 
-      System.out.println("HTTP-status:" + String.valueOf(restResponse.getStatus()));
-      /*
-       * username = data.getUsername(); convoId = data.getConvoId(); templates =
-       * data.getTemplates(); models = data.getmodels();
-       */
-    } catch (ResourceNotFoundException e) {
-      System.out.println("No  data found");
-    } catch (RuntimeException e) {
-      // Display any kind of other error
-      System.out.println(e.getMessage());
-    } catch (JAXBException e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
-    }
-    return data;
-  }
+	public String getContext() {
+		return selectedContext;
+	}
 
-  public AdtConversation getModelResponse(
-      String prompt, String context, String model, String option, String convoId) {
+	public AdtConversation init() {
+		AdtConversation data = null;
+		String username = null;
+		if (abapProject.getDestinationId().contains("MD1")) {
+			resourceUri = "/sap/bc/adt/zabapassist/adt_resource/conversations?";
+		} else {
+			resourceUri = "/sap/bc/adt/yabapassist/adt_resource/conversations?";
+		}
+		resourceUri = resourceUri + "userinfo=x";
+		URI abapAssistUri = URI.create(resourceUri);
+		IRestResource abapAssistResource = restResourceFactory
+				.createResourceWithStatelessSession(abapAssistUri,
+						destination);
 
-    AdtConversation data = null;
+		try {
+			// Trigger GET request on resource data
+			restResponse = abapAssistResource.get(null, IResponse.class);
+			message = restResponse.getBody().toString();
 
-    resourceUri = "/sap/bc/adt/yabapassist/adt_resource/conversations?";
+			JAXBContext jaxbContext = JAXBContext
+					.newInstance(AdtConversation.class);
+			Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
+			data = (AdtConversation) unmarshaller
+					.unmarshal(new StringReader(message));
 
-    resourceUri =
-        resourceUri
-            + "model="
-            + URLEncoder.encode("gemini 1.5", StandardCharsets.UTF_8)
-            + '&'
-            + "prompt="
-            + URLEncoder.encode(prompt, StandardCharsets.UTF_8)
-            + '&'
-            + "context="
-            + URLEncoder.encode(context, StandardCharsets.UTF_8)
-            + '&'
-            + "option="
-            + option
-            + '&'
-            + "convo_id="
-            + convoId;
-    URI abapAssistUri = URI.create(resourceUri);
-    IRestResource abapAssistResource =
-        restResourceFactory.createResourceWithStatelessSession(abapAssistUri, destination);
+			System.out.println("HTTP-status:"
+					+ String.valueOf(restResponse.getStatus()));
+			/*
+			 * username = data.getUsername(); convoId = data.getConvoId();
+			 * templates = data.getTemplates(); models = data.getmodels();
+			 */
+		} catch (ResourceNotFoundException e) {
+			System.out.println("No  data found");
+		} catch (RuntimeException e) {
+			// Display any kind of other error
+			System.out.println(e.getMessage());
+		} catch (JAXBException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return data;
+	}
 
-    try {
-      // Trigger GET request on resource data
-      restResponse = abapAssistResource.get(null, IResponse.class);
-      message = restResponse.getBody().toString();
+	public AdtConversation getModelResponse(String prompt, String context,
+			String model, String option, String convoId) {
 
-      JAXBContext jaxbContext = JAXBContext.newInstance(AdtConversation.class);
-      Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
-      data = (AdtConversation) unmarshaller.unmarshal(new StringReader(message));
+		AdtConversation data = null;
 
-      System.out.println("HTTP-status:" + String.valueOf(restResponse.getStatus()));
-    } catch (ResourceNotFoundException e) {
-      System.out.println("No  data found");
-    } catch (RuntimeException e) {
-      // Display any kind of other errors
-      System.out.println(e.getMessage());
-    } catch (JAXBException e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
-    }
+		if (abapProject.getDestinationId().contains("MD1")) {
+			resourceUri = "/sap/bc/adt/zabapassist/adt_resource/conversations?";
+		} else {
+			resourceUri = "/sap/bc/adt/yabapassist/adt_resource/conversations?";
+		}
 
-    return data;
-  }
+		resourceUri = resourceUri + "model="
+				+ URLEncoder.encode(model.substring(7),
+						StandardCharsets.UTF_8)
+				+ '&' + "prompt="
+				+ URLEncoder.encode(prompt, StandardCharsets.UTF_8) + '&'
+				+ "context="
+				+ URLEncoder.encode(context, StandardCharsets.UTF_8) + '&'
+				+ "option=" + option + '&' + "convo_id=" + convoId;
+		URI abapAssistUri = URI.create(resourceUri);
+		IRestResource abapAssistResource = restResourceFactory
+				.createResourceWithStatelessSession(abapAssistUri,
+						destination);
 
-  public AdtConversation updateFeedback(String respId, String feedBackType) {
+		try {
+			// Trigger GET request on resource data
+			restResponse = abapAssistResource.get(null, IResponse.class);
+			message = restResponse.getBody().toString();
 
-    AdtConversation data = null;
+			JAXBContext jaxbContext = JAXBContext
+					.newInstance(AdtConversation.class);
+			Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
+			data = (AdtConversation) unmarshaller
+					.unmarshal(new StringReader(message));
 
-    String resourceUri = "/sap/bc/adt/yabapassist/adt_resource/conversations?";
+			System.out.println("HTTP-status:"
+					+ String.valueOf(restResponse.getStatus()));
+		} catch (ResourceNotFoundException e) {
+			System.out.println("No  data found");
+		} catch (RuntimeException e) {
+			// Display any kind of other errors
+			System.out.println(e.getMessage());
+		} catch (JAXBException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
-    if (feedBackType == "LIKE") {
-      resourceUri = resourceUri + "like=" + respId;
-    } else if (feedBackType == "DISLIKE") {
-      resourceUri = resourceUri + "dislike=" + respId;
-    }
+		return data;
+	}
 
-    URI abapAssistUri = URI.create(resourceUri);
-    IRestResource abapAssistResource =
-        restResourceFactory.createResourceWithStatelessSession(abapAssistUri, destination);
+	public AdtConversation updateFeedback(String respId,
+			String feedBackType) {
 
-    try {
-      // Trigger GET request on resource data
-      restResponse = abapAssistResource.get(null, IResponse.class);
-      message = restResponse.getBody().toString();
+		AdtConversation data = null;
 
-      JAXBContext jaxbContext = JAXBContext.newInstance(AdtConversation.class);
-      Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
-      data = (AdtConversation) unmarshaller.unmarshal(new StringReader(message));
+		String resourceUri = "";
+		if (abapProject.getDestinationId().contains("MD1")) {
+			resourceUri = "/sap/bc/adt/zabapassist/adt_resource/conversations?";
+		} else {
+			resourceUri = "/sap/bc/adt/yabapassist/adt_resource/conversations?";
+		}
 
-      System.out.println("HTTP-status:" + String.valueOf(restResponse.getStatus()));
-    } catch (ResourceNotFoundException e) {
-      System.out.println("No  data found");
-    } catch (RuntimeException e) {
-      // Display any kind of other errors
-      System.out.println(e.getMessage());
-    } catch (JAXBException e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
-    }
+		if (feedBackType == "LIKE") {
+			resourceUri = resourceUri + "like=" + respId;
+		} else if (feedBackType == "DISLIKE") {
+			resourceUri = resourceUri + "dislike=" + respId;
+		}
 
-    return data;
-  }
+		URI abapAssistUri = URI.create(resourceUri);
+		IRestResource abapAssistResource = restResourceFactory
+				.createResourceWithStatelessSession(abapAssistUri,
+						destination);
+
+		try {
+			// Trigger GET request on resource data
+			restResponse = abapAssistResource.get(null, IResponse.class);
+			message = restResponse.getBody().toString();
+
+			JAXBContext jaxbContext = JAXBContext
+					.newInstance(AdtConversation.class);
+			Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
+			data = (AdtConversation) unmarshaller
+					.unmarshal(new StringReader(message));
+
+			System.out.println("HTTP-status:"
+					+ String.valueOf(restResponse.getStatus()));
+		} catch (ResourceNotFoundException e) {
+			System.out.println("No  data found");
+		} catch (RuntimeException e) {
+			// Display any kind of other errors
+			System.out.println(e.getMessage());
+		} catch (JAXBException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		return data;
+	}
 }
