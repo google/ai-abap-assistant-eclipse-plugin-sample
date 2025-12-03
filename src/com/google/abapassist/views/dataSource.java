@@ -128,11 +128,8 @@ public class dataSource {
 	public AdtConversation init() {
 		AdtConversation data = null;
 		String username = null;
-		if (abapProject.getDestinationId().contains("MD1")) {
-			resourceUri = "/sap/bc/adt/zabapassist/adt_resource/conversations?";
-		} else {
-			resourceUri = "/sap/bc/adt/yabapassist/adt_resource/conversations?";
-		}
+
+		resourceUri = "/sap/bc/adt/zabapassist/adt_resource/conversations?";
 		resourceUri = resourceUri + "userinfo=x";
 		URI abapAssistUri = URI.create(resourceUri);
 		IRestResource abapAssistResource = restResourceFactory
@@ -173,11 +170,7 @@ public class dataSource {
 
 		AdtConversation data = null;
 
-		if (abapProject.getDestinationId().contains("MD1")) {
-			resourceUri = "/sap/bc/adt/zabapassist/adt_resource/conversations?";
-		} else {
-			resourceUri = "/sap/bc/adt/yabapassist/adt_resource/conversations?";
-		}
+		resourceUri = "/sap/bc/adt/zabapassist/adt_resource/conversations?";
 
 		resourceUri = resourceUri + "model="
 				+ URLEncoder.encode(model.substring(7),
@@ -224,11 +217,8 @@ public class dataSource {
 		AdtConversation data = null;
 
 		String resourceUri = "";
-		if (abapProject.getDestinationId().contains("MD1")) {
-			resourceUri = "/sap/bc/adt/zabapassist/adt_resource/conversations?";
-		} else {
-			resourceUri = "/sap/bc/adt/yabapassist/adt_resource/conversations?";
-		}
+
+		resourceUri = "/sap/bc/adt/zabapassist/adt_resource/conversations?";
 
 		if (feedBackType == "LIKE") {
 			resourceUri = resourceUri + "like=" + respId;

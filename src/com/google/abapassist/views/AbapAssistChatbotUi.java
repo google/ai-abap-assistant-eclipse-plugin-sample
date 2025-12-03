@@ -44,6 +44,7 @@ public class AbapAssistChatbotUi extends ViewPart implements ISelectionListener 
   private static final String LOADHISTORY_PROMPT = "LOADHISTORY";
   private static final String LIKE_PROMPT = "LIKE";
   private static final String DISLIKE_PROMPT = "DISLIKE";
+  private static final String CLEARCONVO_ID_PROMPT = "CLEARCONVOID";
 
   private static final String JS_FILE = "AbapAssistChatbotUi.js";
   private static final String CSS_FILE = "AbapAssistChatbotUi.css";
@@ -128,21 +129,29 @@ public class AbapAssistChatbotUi extends ViewPart implements ISelectionListener 
                     {
                       loadHistory(this.arguments);
                     }
+                    break;
                   case LIKE_PROMPT:
                     {
                       String id = String.valueOf(this.arguments[2]);
                       dataapi.updateFeedback(id, "LIKE");
                     }
+                    break;
                   case DISLIKE_PROMPT:
                     {
                       String id = String.valueOf(this.arguments[2]);
                       dataapi.updateFeedback(id, "DISLIKE");
                     }
                     break;
+                  case CLEARCONVO_ID_PROMPT:
+                  {
+                    clearConvoId();
+                  }
+                  break;
                   default:
                     {
                       callModel(this.arguments);
                     }
+                    break;
                 }
               })
           .start();
@@ -160,7 +169,7 @@ public class AbapAssistChatbotUi extends ViewPart implements ISelectionListener 
 
     private void loadHistory(Object[] arguments) {
         String resolveFunctionName = (String) this.arguments[0];
-      String convoId = String.valueOf(this.arguments[2]);
+      convoId = String.valueOf(this.arguments[2]);
       List<AdtConversation.Chat> chats = initInfo.getConversation(convoId);
 
       chats.forEach(
@@ -184,6 +193,10 @@ public class AbapAssistChatbotUi extends ViewPart implements ISelectionListener 
             System.out.println("jscallback ==" + jsCallback);
             uiBrowser.execute(jsCallback);
           });
+    }
+    
+    private void clearConvoId( ) {
+    	convoId = "";
     }
 
     private void callModel(Object[] arguments) {

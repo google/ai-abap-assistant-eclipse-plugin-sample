@@ -50,6 +50,11 @@ function newMessage() {
   removeAllChildrenExceptStartupTiles('chat-container', 'startupTiles');
 }
 
+function newConversation() {
+  removeAllChildrenExceptStartupTiles('chat-container', 'startupTiles');
+  callJavafunction('clearConvoId', 'CLEARCONVOID');
+}
+
 /**
  * Toggles the history.
  */

@@ -101,11 +101,7 @@ public class QuickAssistDataSource {
 		String response = "";
 		String convoId = "";
 
-		if (abapProject.getDestinationId().contains("MD1")) {
-	    	resourceUri = "/sap/bc/adt/zabapassist/adt_resource/contentAssistProposals?";
-	    } else {
-	    	resourceUri = "/sap/bc/adt/yabapassist/adt_resource/contentAssistProposals?";
-	    }
+		resourceUri = "/sap/bc/adt/zabapassist/adt_resource/contentAssistProposals?";
 
 		resourceUri = resourceUri + "model="
 				+ URLEncoder.encode(model, StandardCharsets.UTF_8) + '&'

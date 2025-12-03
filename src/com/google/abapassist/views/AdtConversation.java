@@ -49,6 +49,7 @@ public class AdtConversation {
 
   public List<Chat> getConversation(String convoId) {
     List<Chat> chats = null;
+    setConvoId(convoId);
     for (Item historyItem : history) {
       if (historyItem.conversationId != null && historyItem.conversationId.equals(convoId)) {
         chats = historyItem.getChats();
