@@ -15,45 +15,18 @@
 package com.google.abapassist.views;
 
 import java.util.List;
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlElementWrapper;
-import javax.xml.bind.annotation.XmlRootElement;
 
 /** Java class representing the ADT_CONVERSATION XML element. */
-@XmlRootElement(name = "ADT_CONVERSATION")
-@XmlAccessorType(XmlAccessType.FIELD)
 public class AdtConversation {
 
-  @XmlElement(name = "MODEL")
   private String model;
-
-  @XmlElement(name = "CONVO_ID")
   private String conversationId;
-
-  @XmlElement(name = "PROMPT")
   private String prompt;
-
-  @XmlElement(name = "RESPONSE")
   private String response;
-
-  @XmlElement(name = "ADDITIONAL_INFO")
   private String additionalInfo;
-
-  @XmlElement(name = "USERNAME")
   private String username;
-
-  @XmlElementWrapper(name = "TEMPLATES")
-  @XmlElement(name = "TEMPLATE")
   private List<Template> templates;
-
-  @XmlElementWrapper(name = "MODELS")
-  @XmlElement(name = "MODEL")
   private List<Model> models;
-
-  @XmlElementWrapper(name = "HISTORY")
-  @XmlElement(name = "ITEM")
   private List<Item> history;
 
   public List<Item> getHistory() {
@@ -141,15 +114,9 @@ public class AdtConversation {
   }
 
   /** Java class representing the TEMPLATE XML element. */
-  @XmlAccessorType(XmlAccessType.FIELD)
   public static class Template {
-    @XmlElement(name = "TEMPLATE_ID")
     private String templateId;
-
-    @XmlElement(name = "DESCRIPTION")
     private String description;
-
-    @XmlElement(name = "TEMPLATE")
     private String template;
 
     public String getTemplateId() {
@@ -178,12 +145,8 @@ public class AdtConversation {
   }
 
   /** Java class representing the MODEL XML element. */
-  @XmlAccessorType(XmlAccessType.FIELD)
   public static class Model {
-    @XmlElement(name = "MODEL_KEY")
     private String modelKey;
-
-    @XmlElement(name = "MODEL_NAME")
     private String modelName;
 
     public String getModelKey() {
@@ -204,33 +167,15 @@ public class AdtConversation {
   }
 
   /** Java class representing the CHAT XML element. */
-  @XmlAccessorType(XmlAccessType.FIELD)
   public static class Chat {
-    @XmlElement(name = "REQ_ID")
     private String requestId;
-
-    @XmlElement(name = "REQUEST_STRING")
     private String requestString;
-
-    @XmlElement(name = "REQUEST_AFTER_PREPROCESS")
     private String requestAfterPreprocess;
-
-    @XmlElement(name = "REQ_TIMESTAMP")
     private String reqTimestamp;
-
-    @XmlElement(name = "RESP_ID")
     private String respId;
-
-    @XmlElement(name = "RESPONSE_STRING")
     private String responseString;
-
-    @XmlElement(name = "RET_CODE")
     private String retCode;
-
-    @XmlElement(name = "RET_TEXT")
     private String retText;
-
-    @XmlElement(name = "RESP_TIMESTAMP")
     private String respTimestamp;
 
     public String getRequestText() {
@@ -252,22 +197,38 @@ public class AdtConversation {
     public void setRequestString(String requestString) {
       this.requestString = requestString;
     }
+
+    public void setRequestId(String requestId) {
+      this.requestId = requestId;
+    }
+    public void setRequestAfterPreprocess(String requestAfterPreprocess) {
+      this.requestAfterPreprocess = requestAfterPreprocess;
+    }
+    public void setReqTimestamp(String reqTimestamp) {
+      this.reqTimestamp = reqTimestamp;
+    }
+    public void setRespId(String respId) {
+      this.respId = respId;
+    }
+    public void setResponseString(String responseString) {
+      this.responseString = responseString;
+    }
+    public void setRetCode(String retCode) {
+      this.retCode = retCode;
+    }
+    public void setRetText(String retText) {
+      this.retText = retText;
+    }
+    public void setRespTimestamp(String respTimestamp) {
+      this.respTimestamp = respTimestamp;
+    }
   }
 
   /** Java class representing the ITEM XML element. */
-  @XmlAccessorType(XmlAccessType.FIELD)
   public static class Item {
-    @XmlElement(name = "CONVO_ID")
     private String conversationId;
-
-    @XmlElement(name = "UNAME")
     private String userName;
-
-    @XmlElement(name = "FIRST_RUN")
     private String firstRun;
-
-    @XmlElementWrapper(name = "CHATS")
-    @XmlElement(name = "CHAT")
     private List<Chat> chats;
 
     public List<Chat> getChats() {
@@ -276,6 +237,19 @@ public class AdtConversation {
 
     public String getConvoId() {
       return conversationId;
+    }
+
+    public void setConversationId(String conversationId) {
+      this.conversationId = conversationId;
+    }
+    public void setUserName(String userName) {
+      this.userName = userName;
+    }
+    public void setFirstRun(String firstRun) {
+      this.firstRun = firstRun;
+    }
+    public void setChats(List<Chat> chats) {
+      this.chats = chats;
     }
   }
 }
