@@ -20,15 +20,14 @@ Require-Bundle: org.eclipse.ui,
  com.sap.adt.destinations.model,
  org.eclipse.core.runtime;bundle-version="3.32.0",
  com.google.gson,
- jakarta.xml.bind,
- com.fasterxml.jackson.core.jackson-core,
- com.fasterxml.jackson.core.jackson-databind,
  com.sap.adt.tools.core.ui;bundle-version="3.48.1",
  com.sap.adt.util.ui;bundle-version="3.48.0",
  org.eclipse.ui.ide;bundle-version="3.22.700"
 Automatic-Module-Name: com.google.abapassist
 Bundle-ActivationPolicy: lazy
 Bundle-Activator: com.google.abapassist.preference.Activator
-Bundle-ClassPath: jackson-core-2.18.2.jar,
- jackson-databind-2.18.2.jar
+Bundle-ClassPath: .,
+ jackson-core-2.18.2.jar,
+ jackson-databind-2.18.2.jar,
+ jackson-annotations-2.18.2.jar
 Bundle-RequiredExecutionEnvironment: JavaSE-21
